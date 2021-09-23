@@ -1,0 +1,32 @@
+{
+    "name": "arkitechdev/openapi",
+    "description": "A package for creating OpenAPI 3 specification files.",
+    "type": "library",
+    "require": {
+        "php": "^7.3|^8.0",
+        "symfony/yaml": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Arkitechdev\\OpenApi\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Arkitechdev\\OpenApi\\OpenApiServiceProvider"
+            ],
+            "aliases": {
+                "OpenApi": "Arkitechdev\\OpenApi\\Facades\\OpenApi"
+            }
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jess Stopa",
+            "email": "jess@stopa.dk"
+        }
+    ],
+    "minimum-stability": "dev"
+}
