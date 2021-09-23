@@ -13,50 +13,54 @@ class Request
     const TYPE_FORMDATA = 'application/x-www-form-urlencoded';
     const TYPE_PLAIN = 'text/plain';
 
-    protected $method;
+    protected string $method = '';
 
-    protected $summary;
+    protected string $summary = '';
 
-    protected $description;
+    protected string $description = '';
 
-    protected $parameters = [];
+    protected array $parameters = [];
 
-    protected $content = [];
+    protected array $content = [];
 
-    protected $responses = [];
+    protected array $responses = [];
 
-    protected $tags = [];
+    protected array $tags = [];
 
-    public function method($method = null)
+    public function method(string $method = null): self|string
     {
         return $this->getOrSet('method', $method);
     }
 
-    public function summary($summary = null)
+    public function summary(string $summary = null): self|string
     {
         return $this->getOrSet('summary', $summary);
     }
 
-    public function description($description = null)
+    public function description(string $description = null): self|string
     {
         return $this->getOrSet('description', $description);
     }
 
-    public function tags($tags = null)
+    public function tags(array $tags = null): self|array
     {
         return $this->getOrSet('tags', $tags);
     }
 
-    public function addTag($tag)
+    public function addTag(array $tag): self
     {
         $this->tags[] = $tag;
         return $this;
     }
 
-    public function addParameter($name, ?string $type = null, callable $callback = null)
+    public function addParameter(string $name, string $type = null, callable $callback = null): self
     {
-        $parameter = new Parameter();
-        $parameter->name($name);
+        if (class_exists($name)) {
+            $parameter = new $name;
+        } else {
+            $parameter = new Parameter();
+            $parameter->name($name);
+        }
 
         if (!is_null($type)) {
             $parameter->type($type);
@@ -70,10 +74,14 @@ class Request
         return $this;
     }
 
-    public function addContentType(string $contentType, ?string $type = null, callable $callback = null): self
+    public function addContentType(string $contentType, string $type = null, callable $callback = null): self
     {
-        $schema = new Schema();
-        $schema->contentType($contentType);
+        if (class_exists($contentType)) {
+            $schema = new $contentType;
+        } else {
+            $schema = new Schema();
+            $schema->contentType($contentType);
+        }
 
         if (!is_null($type)) {
             $schema->type($type);
@@ -87,10 +95,14 @@ class Request
         return $this;
     }
 
-    public function addResponse(int $statusCode, callable $callback = null)
+    public function addResponse(int|string $statusCode, callable $callback = null): self
     {
-        $response = new Response();
-        $response->statusCode($statusCode);
+        if (is_string($statusCode) && class_exists($statusCode)) {
+            $response = new $statusCode;
+        } else {
+            $response = new Response();
+            $response->statusCode($statusCode);
+        }
 
         if (!is_null($callback)) {
             $callback($response);
@@ -100,7 +112,7 @@ class Request
         return $this;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return array_filter([
             'tags' => $this->tags(),

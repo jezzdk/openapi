@@ -8,11 +8,11 @@ class Path
 {
     use GetOrSet;
 
-    protected $path;
+    protected string $path;
 
-    protected $requests = [];
+    protected array $requests = [];
 
-    public function path($path = null): self|string
+    public function path(string $path = null): self|string
     {
         return $this->getOrSet('path', $path);
     }

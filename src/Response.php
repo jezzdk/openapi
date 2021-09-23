@@ -13,26 +13,30 @@ class Response
     const TYPE_FORMDATA = 'application/x-www-form-urlencoded';
     const TYPE_PLAIN = 'text/plain';
 
-    protected $statusCode = 200;
+    protected int $statusCode = 200;
 
-    protected $description;
+    protected string $description = '';
 
-    protected $content = [];
+    protected array $content = [];
 
-    public function statusCode($statusCode = null): self|int
+    public function statusCode(int $statusCode = null): self|int
     {
         return $this->getOrSet('statusCode', $statusCode);
     }
 
-    public function description($description = null): self|string
+    public function description(string $description = null): self|string
     {
         return $this->getOrSet('description', $description);
     }
 
-    public function addContentType($contentType, ?string $type = null, callable $callback = null): self
+    public function addContentType(string $contentType, string $type = null, callable $callback = null): self
     {
-        $schema = new Schema();
-        $schema->contentType($contentType);
+        if (class_exists($contentType)) {
+            $schema = new $contentType;
+        } else {
+            $schema = new Schema();
+            $schema->contentType($contentType);
+        }
 
         if (!is_null($type)) {
             $schema->type($type);

@@ -8,107 +8,114 @@ class OpenApi
 {
     use GetOrSet;
 
-    protected $openapi = '3.0.0';
+    protected string $openapi = '3.0.0';
 
-    protected $title;
+    protected string $title = '';
 
-    protected $version;
+    protected string $description = '';
 
-    protected $servers = [];
+    protected string $version = '';
 
-    protected $paths = [];
+    protected array $servers = [];
 
-    protected $schemas = [];
+    protected array $paths = [];
 
-    protected $responses = [];
+    protected array $schemas = [];
 
-    protected $parameters = [];
+    protected array $responses = [];
 
-    protected $examples = [];
+    protected array $parameters = [];
 
-    protected $requestBodies = [];
+    protected array $examples = [];
 
-    protected $headers = [];
+    protected array $requestBodies = [];
 
-    protected $securitySchemes = [];
+    protected array $headers = [];
 
-    protected $links = [];
+    protected array $securitySchemes = [];
 
-    protected $callbacks = [];
+    protected array $links = [];
 
-    protected $security = [];
+    protected array $callbacks = [];
 
-    public function openapi($openapi = null)
+    protected array $security = [];
+
+    public function openapi(string $openapi = null): self|string
     {
         return $this->getOrSet('openapi', $openapi);
     }
 
-    public function title($title = null)
+    public function title(string $title = null): self|string
     {
         return $this->getOrSet('title', $title);
     }
 
-    public function version($version = null)
+    public function description(string $description = null): self|string
+    {
+        return $this->getOrSet('description', $description);
+    }
+
+    public function version(string $version = null): self|string
     {
         return $this->getOrSet('version', $version);
     }
 
-    public function servers($servers = null)
+    public function servers(array $servers = null): self|array
     {
         return $this->getOrSet('servers', $servers);
     }
 
-    public function schemas($schemas = null)
+    public function schemas(array $schemas = null): self|array
     {
         return $this->getOrSet('schemas', $schemas);
     }
 
-    public function responses($responses = null)
+    public function responses(array $responses = null): self|array
     {
         return $this->getOrSet('responses', $responses);
     }
 
-    public function parameters($parameters = null)
+    public function parameters(array $parameters = null): self|array
     {
         return $this->getOrSet('parameters', $parameters);
     }
 
-    public function examples($examples = null)
+    public function examples(array $examples = null): self|array
     {
         return $this->getOrSet('examples', $examples);
     }
 
-    public function requestBodies($requestBodies = null)
+    public function requestBodies(array $requestBodies = null): self|array
     {
         return $this->getOrSet('requestBodies', $requestBodies);
     }
 
-    public function headers($headers = null)
+    public function headers(array $headers = null): self|array
     {
         return $this->getOrSet('headers', $headers);
     }
 
-    public function securitySchemes($securitySchemes = null)
+    public function securitySchemes(array $securitySchemes = null): self|array
     {
         return $this->getOrSet('securitySchemes', $securitySchemes);
     }
 
-    public function links($links = null)
+    public function links(array $links = null): self|array
     {
         return $this->getOrSet('links', $links);
     }
 
-    public function callbacks($callbacks = null)
+    public function callbacks(array $callbacks = null): self|array
     {
         return $this->getOrSet('callbacks', $callbacks);
     }
 
-    public function security($security = null)
+    public function security(array $security = null): self|array
     {
         return $this->getOrSet('security', $security);
     }
 
-    public function addServer($url, $description = null)
+    public function addServer(string $url, string $description = null): self
     {
         $this->servers[] = [
             'url' => $url,
@@ -117,37 +124,37 @@ class OpenApi
         return $this;
     }
 
-    public function get($uri, ?string $className = null, ?callable $callback = null)
+    public function get(string $uri, string $className = null, callable $callback = null): self
     {
         $this->addPath('get', $uri, $className, $callback);
         return $this;
     }
 
-    public function post($uri, ?string $className = null, ?callable $callback = null)
+    public function post(string $uri, string $className = null, callable $callback = null): self
     {
         $this->addPath('post', $uri, $className, $callback);
         return $this;
     }
 
-    public function patch($uri, ?string $className = null, ?callable $callback = null)
+    public function patch(string $uri, string $className = null, callable $callback = null): self
     {
         $this->addPath('patch', $uri, $className, $callback);
         return $this;
     }
 
-    public function put($uri, ?string $className = null, ?callable $callback = null)
+    public function put(string $uri, string $className = null, callable $callback = null): self
     {
         $this->addPath('put', $uri, $className, $callback);
         return $this;
     }
 
-    public function delete($uri, ?string $className = null, ?callable $callback = null)
+    public function delete(string $uri, string $className = null, callable $callback = null): self
     {
         $this->addPath('delete', $uri, $className, $callback);
         return $this;
     }
 
-    protected function addPath($method, $uri, ?string $className = null, ?callable $callback = null)
+    protected function addPath(string $method, string $uri, string $className = null, callable $callback = null): self
     {
         if (isset($this->paths[$uri])) {
             $path = $this->paths[$uri];
@@ -168,12 +175,13 @@ class OpenApi
         return $this;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return array_filter([
             'openapi' => $this->openapi(),
             'info' => [
                 'title' => $this->title(),
+                'description' => $this->description(),
                 'version' => $this->version()
             ],
             'servers' => $this->servers(),
@@ -213,12 +221,12 @@ class OpenApi
         ]);
     }
 
-    public function toJson()
+    public function toJson(): string
     {
         return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
 
-    public function dd()
+    public function dd(): void
     {
         dd($this->toArray());
     }

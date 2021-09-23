@@ -10,26 +10,30 @@ class Schema
 
     const TYPE_OBJECT = 'object';
 
-    protected $type = 'object';
+    protected string $type = 'object';
 
-    protected $contentType = 'application/json';
+    protected string $contentType = 'application/json';
 
-    protected $properties = [];
+    protected array $properties = [];
 
-    public function type($type = null): self|string
+    public function type(string $type = null): self|string
     {
         return $this->getOrSet('type', $type);
     }
 
-    public function contentType($contentType = null): self|string
+    public function contentType(string $contentType = null): self|string
     {
         return $this->getOrSet('contentType', $contentType);
     }
 
-    public function addProperty($name, ?string $type = null, callable $callback = null): self
+    public function addProperty(string $name, string $type = null, callable $callback = null): self
     {
-        $property = new Property();
-        $property->name($name);
+        if (class_exists($name)) {
+            $property = $name;
+        } else {
+            $property = new Property();
+            $property->name($name);
+        }
 
         if (!is_null($type)) {
             $property->type($type);
