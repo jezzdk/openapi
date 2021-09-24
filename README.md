@@ -2,7 +2,7 @@
 
 ## Requirements
 
-* PHP 7.4 | PHP 8.0
+* PHP 7.3 | PHP 8.0
 * Laravel 8 (if you want to use the facade and command)
 
 ## Installation
