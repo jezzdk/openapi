@@ -339,3 +339,10 @@ OpenApi::schemas([
 There's a cool [online editor with builtin validator](https://editor.swagger.io/) that you can use.
 
 When you have generated your JSON/YAML file, you can paste its contents into the editor and check that it looks fine and dandy.
+
+## Roadmap
+
+Things that I would like to do with this package (in no particular order):
+
+* Add more OpenApi features
+* Make traits for integration with Laravel models, controllers etc. (to keep the docs closer to the code)
