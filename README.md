@@ -3,11 +3,11 @@
 ## Requirements
 
 * PHP 7.4 | PHP 8.0
-* Laravel 8
+* Laravel 8 (if you want to use the facade and command)
 
 ## Installation
 
-To install from composer:
+Install with composer:
 
 `composer require arkitechdev/openapi`
 
@@ -40,18 +40,56 @@ return [
     'output_path' => base_path('docs.json'),
 
 ];
-
 ```
 
 The `docs_path` contains the path to your doc specification file.
 
 The `output_path` is where you want the generated API docs to be stored. If the filename has a .json extension, it will be created as a JSON file. If the filename has a .yaml extension, it will be created as a YAML file. It's magic.
 
+## Getting started
+
+The library expects a file called `docs.php` in the root of your project. You can customize this in the config file. To start doc'ing, you can use the OpenApi facade. It works very similar to creating routes in Laravel. Here's an example:
+
+*docs.php:*
+```php
+<?php
+
+use Arkitechdev\OpenApi\Facades\OpenApi;
+
+OpenApi::title('Sample API');
+OpenApi::description('This is just an example of a docs file');
+OpenApi::version('1.0.0');
+
+OpenApi::addServer('/', 'localhost');
+
+OpenApi::schemas([
+    Schemas\Post::class,
+    Schemas\User::class,
+    Schemas\Image::class,
+]);
+
+OpenApi::get('/posts', \App\Docs\Requests\PostIndex::class);
+OpenApi::post('/posts', \App\Docs\Requests\PostStore::class);
+OpenApi::get('/posts/{id}', \App\Docs\Requests\PostShow::class);
+OpenApi::patch('/posts/{id}', \App\Docs\Requests\PostUpdate::class);
+OpenApi::delete('/posts/{id}', \App\Docs\Requests\PostDestroy::class);
+
+OpenApi::get('/users', \App\Docs\Requests\UserIndex::class);
+OpenApi::post('/users', \App\Docs\Requests\UserStore::class);
+OpenApi::get('/users/{id}', \App\Docs\Requests\UserShow::class);
+OpenApi::patch('/users/{id}', \App\Docs\Requests\UserUpdate::class);
+OpenApi::delete('/users/{id}', \App\Docs\Requests\UserDestroy::class);
+```
+
+Then simply use the artisan command to generate the Open API docs json or yaml file. Simple!
+
+There a various ways to build your documentation. They are explained below.
+
 ## Methods
 
 Most of the methods in the classes are somewhat self-explanatory and provides that sweet autocompletion. There is a few things that deserves to be mentioned here though.
 
-**Getters and setters**
+### Getters and setters
 
 Many of the methods either sets a property value and returns itself, or returns the value of the property in question, if the given parameter is not set or is null.
 
@@ -73,7 +111,7 @@ Very handy. Meanwhile, if no parameter is set, then the value is returned:
 $title = OpenApi::title() // $title = 'A title'
 ```
 
-**Callbacks**
+### Callbacks
 
 Some method supply callbacks. When setting child objects, such as parameters or properties, the method supplies an optional callback for further definition of the object. Depending on the type you are adding, the first and only parameter of the callback is the added object.
 
@@ -135,7 +173,7 @@ OpenApi::title('API example')
 
 It can get unmanageable real quick, which is why this library supports splitting everything into classes. I'll go over this in the next chapter.
 
-**Method defaults**
+### Method defaults
 
 If you just want to create parameters and properties without all the fuzz, then I've got your back. Notice those `null` parameters in the example above? That's where the type goes.
 
